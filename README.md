@@ -1,107 +1,100 @@
-# 🍬 Candy Classification & 🖼 SIFT Object Detection
+# Candy Classification & Object Detection Project
 
-This repository contains **two main projects** related to candy recognition and classification:
+This repository contains two computer vision tasks:
 
-1. **Candy Classification (Machine Learning)** – Classifies candies based on tabular attributes (e.g., chocolate content, sugar percentage, etc.).
-2. **Candy Recognition via SIFT (Computer Vision)** – Uses image feature matching to detect specific candy types in images.
+1. **Candy Classification using YOLOv11** – Detects and classifies different types of candies in images.
+2. **Object Detection using SIFT** – Detects and matches keypoints between images using the Scale-Invariant Feature Transform (SIFT) algorithm.
 
 ---
 
 ## 📂 Project Structure
 
-```
-├── Candy_Classification.ipynb   # Jupyter Notebook for classification
-├── candy_data.zip                # Dataset for classification (tabular + labels)
-├── Template.zip                   # Dataset images for SIFT object detection
-└── README.md                      # Project documentation
-```
+├── Candy_Classification.ipynb # YOLOv11-based candy classification code
+├── candy_data/ # Dataset for candy classification
+│ ├── images/ # Images for training/testing
+│ ├── labels/ # YOLO annotation files
+│ └── data.yaml # YOLO dataset configuration
+├── Template/ # Dataset for SIFT object detection
+│ ├── template.jpg # Template image for matching
+│ ├── query_images/ # Query images for detection
+├── sift_object_detection.py # SIFT object detection code
+├── requirements.txt # Python dependencies
+└── README.md # Project documentation
+
+yaml
+Copy
+Edit
 
 ---
 
-## 1️⃣ Candy Classification (ML)
+## 📌 1. Candy Classification (YOLOv11)
 
-### 📊 Dataset
-The candy dataset contains:
-- **Binary attributes**: Chocolate, Fruity, Caramel, Peanuty, Nougat, Crisped Rice, Hard, Bar, Pluribus.
-- **Numerical attributes**: Sugar Percentage, Price Percentage, Win Percentage.
-- **Target**: Candy type or category.
+### **Overview**
+This module uses YOLOv11, a state-of-the-art object detection model, to classify and locate different candy types in images.
 
-**Example attributes:**
-| Feature            | Example Value |
-|--------------------|--------------|
-| Chocolate          | 1 (Yes)      |
-| Fruity             | 0 (No)       |
-| Sugar Percentage   | 0.73         |
-| Win Percentage     | 56.5         |
+### **Steps to Run**
+1. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+Train YOLOv11 on the candy dataset:
 
-### 🚀 Process
-1. Load and clean the dataset.
-2. Perform **Exploratory Data Analysis (EDA)**.
-3. Train multiple machine learning models (Logistic Regression, Decision Trees, Random Forest, etc.).
-4. Evaluate performance with accuracy, confusion matrix, and classification report.
+bash
+Copy
+Edit
+yolo task=detect mode=train model=yolov11.pt data=candy_data/data.yaml epochs=50 imgsz=640
+Run inference on test images:
 
----
+bash
+Copy
+Edit
+yolo task=detect mode=predict model=runs/detect/train/weights/best.pt source=candy_data/images/test
+📌 2. Object Detection (SIFT)
+Overview
+This module uses OpenCV's SIFT algorithm to detect and match keypoints between a template image and query images.
 
-## 2️⃣ Candy Recognition via SIFT (CV)
+Steps to Run
+Install OpenCV with extra features:
 
-### 📷 Dataset
-Found in `Template.zip` – contains folders with multiple candy image samples, such as:
-- `MnM/`
-- `Snickers/`
-- `Skittles/`
-- `Airheads/`
-- `Twizzlers/`
-- and more...
+bash
+Copy
+Edit
+pip install opencv-python opencv-contrib-python
+Run the detection script:
 
-### 🧠 Approach
-1. Load query image (candy type) and target scene image.
-2. Apply **SIFT feature detection** to extract keypoints & descriptors.
-3. Use **FLANN or BFMatcher** to match features between query and scene images.
-4. Draw matches and highlight detected candies.
+bash
+Copy
+Edit
+python sift_object_detection.py
+The script will display matched features between the template and query images.
 
----
+📊 Results
+YOLOv11 Candy Classification
+High accuracy in detecting multiple candy types in various lighting conditions.
 
-## ⚙️ Installation
+Works in real-time on video streams.
 
-**1. Clone the repository**
-```bash
-git clone https://github.com/yourusername/candy-ml-cv.git
-cd candy-ml-cv
-```
+SIFT Object Detection
+Robust to scale and rotation changes.
 
-**2. Install dependencies**
-```bash
+Can be used for detecting objects in cluttered environments.
+
+📦 Requirements
+Python 3.8+
+
+YOLOv11 (via Ultralytics)
+
+OpenCV (with contrib modules)
+
+NumPy
+
+Matplotlib
+
+Install all dependencies:
+
+bash
+Copy
+Edit
 pip install -r requirements.txt
-```
+🤝 Contribution
+Feel free to fork this repo and submit pull requests to improve accuracy, add more candy classes, or integrate new detection algorithms.
 
-**3. Extract datasets**
-```bash
-unzip candy_data.zip
-unzip Template.zip
-```
-
-**4. Open notebooks**
-```bash
-jupyter notebook
-```
-
----
-
-## 🛠 Technologies Used
-- **Python 3**
-- **Pandas, NumPy** – Data processing
-- **Matplotlib, Seaborn** – Visualization
-- **Scikit-learn** – Machine Learning models
-- **OpenCV (cv2)** – SIFT feature detection & matching
-- **Jupyter Notebook** – Interactive coding
-
----
-
-## 📜 License
-This project is open-source and free to use for educational purposes.
-
----
-
-## 👤 Author
-**Waleed Shehzad**  
-AI Major Student | Machine Learning & Computer Vision Enthusiast
