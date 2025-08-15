@@ -1,100 +1,146 @@
-# Candy Classification & Object Detection Project
+# 🍬 Candy Classification with YOLOv11
 
-This repository contains two computer vision tasks:
-
-1. **Candy Classification using YOLOv11** – Detects and classifies different types of candies in images.
-2. **Object Detection using SIFT** – Detects and matches keypoints between images using the Scale-Invariant Feature Transform (SIFT) algorithm.
+A deep learning project for detecting and classifying different types of candies using the **YOLOv8** object detection model. This repository contains the complete pipeline from dataset preparation to training, validation, testing, and inference.
 
 ---
 
-## 📂 Project Structure
+## 📌 Project Overview
 
-├── Candy_Classification.ipynb # YOLOv11-based candy classification code
-├── candy_data/ # Dataset for candy classification
-│ ├── images/ # Images for training/testing
-│ ├── labels/ # YOLO annotation files
-│ └── data.yaml # YOLO dataset configuration
-├── Template/ # Dataset for SIFT object detection
-│ ├── template.jpg # Template image for matching
-│ ├── query_images/ # Query images for detection
-├── sift_object_detection.py # SIFT object detection code
-├── requirements.txt # Python dependencies
-└── README.md # Project documentation
+This project uses **Ultralytics YOLOv11** to train an object detection model on a custom candy dataset.  
+The workflow includes:
 
-yaml
-Copy
-Edit
+- Dataset extraction and organization into `train`, `val`, and `test` sets (80/10/10 split)
+- Automatic generation of the `data.yaml` configuration file
+- Model training and hyperparameter tuning
+- Evaluation and performance testing
+- Running inference on custom images
 
 ---
 
-## 📌 1. Candy Classification (YOLOv11)
+## 📂 Dataset Setup
 
-### **Overview**
-This module uses YOLOv11, a state-of-the-art object detection model, to classify and locate different candy types in images.
+Your dataset should contain:
+```
+/images
+   ├── image1.jpg
+   ├── image2.jpg
+/labels
+   ├── image1.txt
+   ├── image2.txt
+classes.txt
+```
 
-### **Steps to Run**
-1. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-Train YOLOv11 on the candy dataset:
+- **`images/`** – All candy images (`.jpg`, `.png`, etc.)
+- **`labels/`** – YOLO-format annotation files (`.txt`) for each image
+- **`classes.txt`** – List of class names (one per line)
 
-bash
-Copy
-Edit
-yolo task=detect mode=train model=yolov11.pt data=candy_data/data.yaml epochs=50 imgsz=640
-Run inference on test images:
+---
 
-bash
-Copy
-Edit
-yolo task=detect mode=predict model=runs/detect/train/weights/best.pt source=candy_data/images/test
-📌 2. Object Detection (SIFT)
-Overview
-This module uses OpenCV's SIFT algorithm to detect and match keypoints between a template image and query images.
+## ⚙️ Installation
 
-Steps to Run
-Install OpenCV with extra features:
+```bash
+# Clone this repository
+git clone https://github.com/your-username/candy-classification.git
+cd candy-classification
 
-bash
-Copy
-Edit
-pip install opencv-python opencv-contrib-python
-Run the detection script:
+# Install YOLOv8
+pip install ultralytics
 
-bash
-Copy
-Edit
-python sift_object_detection.py
-The script will display matched features between the template and query images.
+# (Optional) Install other dependencies
+pip install opencv-python pyyaml
+```
 
-📊 Results
-YOLOv11 Candy Classification
-High accuracy in detecting multiple candy types in various lighting conditions.
+---
 
-Works in real-time on video streams.
+## 🚀 Usage
 
-SIFT Object Detection
-Robust to scale and rotation changes.
+### 1️⃣ Dataset Preparation
+Unzip your dataset into a working directory:
+```bash
+unzip candy_data.zip -d custom_data
+```
+Run the notebook cells to:
+- Create train/val/test directories
+- Split data automatically
+- Generate `data.yaml` from `classes.txt`
 
-Can be used for detecting objects in cluttered environments.
+---
 
-📦 Requirements
-Python 3.8+
+### 2️⃣ Training the Model
+```python
+from ultralytics import YOLO
 
-YOLOv11 (via Ultralytics)
+model = YOLO('yolov8n.pt')  # or yolov8s.pt for better accuracy
+model.train(data='data.yaml', epochs=50, imgsz=640)
+```
 
-OpenCV (with contrib modules)
+---
 
-NumPy
+### 3️⃣ Validation
+```python
+metrics = model.val()
+print(metrics)
+```
 
-Matplotlib
+---
 
-Install all dependencies:
+### 4️⃣ Testing
+```python
+results = model.predict(source='test_data/images', save=True)
+```
 
-bash
-Copy
-Edit
-pip install -r requirements.txt
-🤝 Contribution
-Feel free to fork this repo and submit pull requests to improve accuracy, add more candy classes, or integrate new detection algorithms.
+---
 
+### 5️⃣ Inference on Custom Images
+```python
+results = model.predict(source='path/to/your/image.jpg', save=True)
+```
+The predictions will be saved in the `runs/detect/` directory.
+
+---
+
+## 📁 Folder Structure
+```
+candy-classification/
+│── custom_data/
+│   ├── images/
+│   ├── labels/
+│── data/
+│   ├── train_data/
+│   ├── val_data/
+│   ├── test_data/
+│── data.yaml
+│── Candy_Classification.ipynb
+│── README.md
+```
+
+---
+
+## 📊 Results
+
+| Metric         | Value |
+|----------------|-------|
+| mAP@0.5        | TBD   |
+| Precision      | TBD   |
+| Recall         | TBD   |
+
+*(Replace TBD with actual results after training)*
+
+---
+
+## 📸 Example Predictions
+*(Replace with your actual inference results)*
+
+| Input Image | Prediction |
+|-------------|------------|
+| ![img1](examples/img1.jpg) | ![pred1](examples/pred1.jpg) |
+| ![img2](examples/img2.jpg) | ![pred2](examples/pred2.jpg) |
+
+---
+
+## 📜 License
+This project is released under the **MIT License** – feel free to modify and use it.
+
+---
+
+If you like this project, ⭐ it on GitHub and feel free to contribute!
